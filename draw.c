@@ -48,8 +48,10 @@ void scanline_convert( struct matrix *points, int i, screen s, zbuffer zb, color
       //find bottom, top, middle points:
       // (i+t) is index in points of top, etc.
       t = top(points->m[1][i],points->m[1][i+1],points->m[1][i+2]);
-      m = middle(points->m[1][i],points->m[1][i+1],points->m[1][i+2]);
       b = bottom(points->m[1][i],points->m[1][i+1],points->m[1][i+2]);
+      if (t+b == 1) m = 2;
+      else if (t+b == 2) m = 1;
+      else  m = 0;
       xt = points->m[0][i+t];
       yt = points->m[1][i+t];
       zt = points->m[2][i+t];
@@ -67,24 +69,31 @@ void scanline_convert( struct matrix *points, int i, screen s, zbuffer zb, color
       y = floor(yb);
 
       printf("yb: %lf  ym: %lf yt: %lf\n",yb,ym,yt);
-
-      dx0 = (xt - xb) / (yt - yb);
-      dx1 = (xm - xb) / (ym - yb);
-      dx1flip = (xt - xm) / (yt - ym);
-
-      dz0 = (zt -zbot)   / (yt - yb);
-      dz1 = (zm - zbot) / (ym - yb);
-      dz1flip = (zt - zm) / (yt - ym);
+      printf("b: (%lf, %lf, %lf) m: (%lf, %lf, %lf) T: (%lf, %lf, %lf)\n", xb,yb,zbot, xm,ym,zm, xt,yt,zt);
 
       if (yb == ym) {
         printf("yes\n");
         x1 = xm;
         z1 = zm;
-        dx1 = dx1flip;
-        dz1 = dz1flip;
+        dx0 = (xt - xb) / (yt - yb);
+        dx1 = (xt - xm) / (yt - ym);
+        dz0 = (zt -zbot)   / (yt - yb);
+        dz1 = (zt - zm) / (yt - ym);
+      } else {
+
+        dx0 = (xt - xb) / (yt - yb);
+        dx1 = (xm - xb) / (ym - yb);
+        dx1flip = (xt - xm) / (yt - ym);
+
+        dz0 = (zt -zbot)   / (yt - yb);
+        dz1 = (zm - zbot) / (ym - yb);
+        dz1flip = (zt - zm) / (yt - ym);
       }
 
-      printf("b: (%lf, %lf, %lf) m: (%lf, %lf, %lf) T: (%lf, %lf, %lf)\n", xb,yb,zbot, xm,ym,zm, xt,yt,zt);
+      printf("%lf %lf %lf %lf %lf %lf\n", dx0, dx1, dx1flip, dz0, dz1, dz1flip);
+
+
+
 
       while (y < yt) {
         //printf("drawing\n");
@@ -173,6 +182,8 @@ void draw_polygons( struct matrix *polygons, screen s, zbuffer zb, color c ) {
                  polygons->m[1][point+2],
                  polygons->m[2][point+2],
                  s, zb, c);
+      scanline_convert(polygons, point, s, zb, c);
+      printf(".\n");
     }
   }
 }

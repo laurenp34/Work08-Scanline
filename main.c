@@ -37,15 +37,31 @@ int main(int argc, char **argv) {
   else
     parse_file( "stdin", csystems, edges, polygons, s, zb );
 
+  add_polygon(polygons, 150,5,15, 150,5,84, 150,125,84);
+  //
   // add_point(polygons, 10,10,0);
-  // add_point(polygons, 70,10,0);
+  // add_point(polygons, 50,30,0);
   // add_point(polygons, 10,90,0);
+
+  // add_box(polygons, 0,0,0, 50, 20, 50);
+  //
+  //  edges = make_rotX(10);
+  //  matrix_mult(edges,polygons);
+  //  edges = make_rotY(10);
+  //  matrix_mult(edges,polygons);
+  //
+  //  edges = make_translate(150,240,0);
+  //  matrix_mult(edges,polygons);
+  //
+  //  print_matrix(polygons);
+  //
   // draw_polygons(polygons,s,zb,c);
-  // scanline_convert(polygons,0,s,zb,c);
+  // //scanline_convert(polygons,0,s,zb,c);
+  //
+  // display(s);
 
   free_matrix( edges );
   free_matrix( polygons );
   free_stack(csystems);
 
-  // display(s);
 }
